@@ -97,7 +97,7 @@ This tool is designed for developers, designers, and content migrators who need 
 
 1. **Download** or clone this repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/elementor-extractor-extension.git
+   git clone https://github.com/hordekiller/elementor-extractor-extension.git
    ```
 
 2. Open Chrome and navigate to `chrome://extensions`
