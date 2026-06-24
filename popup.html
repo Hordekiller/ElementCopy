@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Elementor Extractor</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Elementor Extractor</p>
+          <h1>استخراج المان‌های المنتوری</h1>
+        </div>
+        <span id="statusBadge" class="badge">آماده</span>
+      </header>
+
+      <section class="actions">
+        <button id="scanButton" class="primary" type="button">اسکن صفحه فعلی</button>
+        <button id="downloadElementorButton" type="button" disabled>دانلود برای المنتور</button>
+        <button id="downloadReportButton" type="button" disabled>دانلود گزارش</button>
+        <button id="copyButton" type="button" disabled>کپی خروجی</button>
+      </section>
+
+      <section id="message" class="message" hidden></section>
+
+      <section class="stats" aria-label="خلاصه استخراج">
+        <article>
+          <strong id="totalNodes">۰</strong>
+          <span>المان</span>
+        </article>
+        <article>
+          <strong id="widgetCount">۰</strong>
+          <span>ویجت</span>
+        </article>
+        <article>
+          <strong id="imageCount">۰</strong>
+          <span>تصویر</span>
+        </article>
+        <article>
+          <strong id="linkCount">۰</strong>
+          <span>لینک</span>
+        </article>
+      </section>
+
+      <section class="result">
+        <div class="result-header">
+          <h2>خروجی</h2>
+          <span id="siteInfo">هنوز اسکن نشده</span>
+        </div>
+        <textarea id="output" spellcheck="false" placeholder="بعد از اسکن، JSON قابل درون‌ریزی المنتور اینجا نمایش داده می‌شود."></textarea>
+      </section>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

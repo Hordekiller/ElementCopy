@@ -1,0 +1,21 @@
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Extension artifacts
+*.zip
+*.crx
+*.pem
+
+# Logs
+*.log
+
+# Scratch
+scratch/
