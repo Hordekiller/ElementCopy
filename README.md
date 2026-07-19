@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Elementor Extractor" src="icons/preview.png" width="500" />
+  <img alt="Elementor Extractor" src="icons/preview.jpg" width="500" />
   <br />
   <img alt="Elementor Extractor Icon" src="icons/icon128.png" width="128" height="128" />
 </p>
