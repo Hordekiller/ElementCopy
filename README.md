@@ -1,13 +1,9 @@
 <p align="center">
-  <picture>
-    <source srcset=" icons/photo_2026-07-19_11-57-46.jpg" />
-    <img alt="Elementor Extractor" src=" icons/photo_2026-07-19_11-57-46.jpg" />
-  </picture>
-  <picture>
-    <source srcset="icons/icon128.png" />
-    <img alt="Elementor Extractor" src="icons/icon128.png" width="128" height="128" />
-  </picture>
+  <img alt="Elementor Extractor" src="icons/preview.png" width="500" />
+  <br />
+  <img alt="Elementor Extractor Icon" src="icons/icon128.png" width="128" height="128" />
 </p>
+
 
 <h1 align="center">Elementor Extractor</h1>
 
