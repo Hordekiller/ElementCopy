@@ -37,6 +37,14 @@ This tool is designed for developers, designers, and content migrators who need 
 
 ---
 
+## 🔒 Security & privacy
+
+- **Minimal permissions**: no host permissions; the extension only accesses the tab where you click it (`activeTab`).
+- **Isolated scanning**: `scanner.js` runs in the extension's isolated world, so page scripts can't tamper with it. Only a tiny read of Elementor's config globals runs in the page context.
+- **Secrets removed**: nonces, tokens and similar values (including `?_wpnonce=` in links) are replaced with `[redacted]` in both outputs.
+
+---
+
 ## ✨ Features | قابلیت‌ها
 
 ### 🧠 Elementor Detection
@@ -152,7 +160,7 @@ This tool is designed for developers, designers, and content migrators who need 
 │                                                             │
 │  ┌──────────────┐    ┌──────────────────────────────────┐  │
 │  │   popup.html  │    │          scanner.js              │  │
-│  │   popup.js    │───▶│   (injected into MAIN world)     │  │
+│  │   popup.js    │───▶│   (injected, isolated world)     │  │
 │  │   popup.css   │    │                                  │  │
 │  │              │    │  ┌──────────────────────────┐   │  │
 │  │  ┌─────────┐ │    │  │  buildElementorTemplate │   │  │
@@ -167,22 +175,24 @@ This tool is designed for developers, designers, and content migrators who need 
 │         └──────executeScript────────┘                       │
 │                                                             │
 │  Permissions: activeTab, scripting, downloads               │
-│  Host: <all_urls>                                           │
+│  Host permissions: none (activeTab only)                    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### Flow | جریان اجرا
 
 1. **Popup** (`popup.js`) queries the active tab via `chrome.tabs`
-2. Injects **`scanner.js`** into the page's MAIN world (required for full DOM and JS access)
-3. Calls `window.__elementorExtractor.run()` which returns a comprehensive result object
-4. Popup displays the import template JSON, updates statistics, and enables download/copy actions
+2. Injects **`scanner.js`** into the extension's isolated world and calls `window.__elementorExtractor.run()`
+3. Reads Elementor's config globals (`elementorFrontendConfig`, etc.) with a small function in the page's MAIN world, returned as JSON strings
+4. Removes sensitive values (nonces, tokens, `?_wpnonce=` URL params) from the result
+5. Popup displays the import template JSON, updates statistics, and enables download/copy actions
 
 ### Key Design Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| **MAIN world injection** | Required to access Elementor's runtime globals (`elementorFrontendConfig`, etc.) |
+| **Isolated world by default** | Page scripts can't tamper with the scanner; only the config-globals read runs in the MAIN world |
+| **No host permissions** | `activeTab` grants access only to the tab where the user opens the popup |
 | **FNV-1a hashing for IDs** | Generates deterministic, short (7 char) element IDs without collisions |
 | **Virtual structure wrapping** | Ensures generated templates conform to Elementor's strict section→column→widget hierarchy |
 | **Widget type inference fallback** | Gracefully handles unknown or third-party widgets by inferring from DOM patterns |

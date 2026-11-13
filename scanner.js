@@ -190,28 +190,6 @@
     cssVariables: extractCssVariables(),
   });
 
-  const extractElementorConfig = () => {
-    const config = {};
-    const globals = [
-      "elementorFrontendConfig",
-      "elementorModules",
-      "ElementorProFrontendConfig",
-      "elementorCommonConfig",
-    ];
-
-    for (const key of globals) {
-      if (window[key]) {
-        try {
-          config[key] = JSON.parse(JSON.stringify(window[key]));
-        } catch {
-          config[key] = "[unserializable]";
-        }
-      }
-    }
-
-    return config;
-  };
-
   const readJsonAttribute = (element, name) => {
     const value = attr(element, name);
     if (!value) return {};
@@ -797,6 +775,9 @@
     };
   };
 
+  // Runs in the extension's isolated world: page scripts cannot tamper with
+  // these functions. Page-level JS globals (elementorFrontendConfig, ...) are
+  // read separately by the popup.
   const run = () => {
     const elements = extractElementorElements();
     const links = extractLinks();
@@ -827,7 +808,7 @@
       forms,
       videos,
       assets,
-      elementorConfig: extractElementorConfig(),
+      elementorConfig: {},
       importTemplate,
     };
   };
