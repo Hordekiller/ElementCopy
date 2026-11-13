@@ -1,0 +1,97 @@
+{
+  "extName": {
+    "message": "Elementor Extractor"
+  },
+  "extDescription": {
+    "message": "ویجت‌ها، بخش‌ها، قالب‌ها، منابع، لینک‌ها، تصاویر، فرم‌ها و متادیتای المنتور را از صفحه فعلی استخراج می‌کند."
+  },
+  "heroTitle": {
+    "message": "استخراج المان‌های المنتوری"
+  },
+  "statusReady": {
+    "message": "آماده"
+  },
+  "statusScanning": {
+    "message": "اسکن"
+  },
+  "statusSuccess": {
+    "message": "موفق"
+  },
+  "statusNotFound": {
+    "message": "یافت نشد"
+  },
+  "statusError": {
+    "message": "خطا"
+  },
+  "btnScanPage": {
+    "message": "اسکن صفحه فعلی"
+  },
+  "btnScanning": {
+    "message": "در حال اسکن..."
+  },
+  "btnDownloadElementor": {
+    "message": "دانلود برای المنتور"
+  },
+  "btnDownloadReport": {
+    "message": "دانلود گزارش"
+  },
+  "btnCopy": {
+    "message": "کپی خروجی"
+  },
+  "statsAria": {
+    "message": "خلاصه استخراج"
+  },
+  "statElements": {
+    "message": "المان"
+  },
+  "statWidgets": {
+    "message": "ویجت"
+  },
+  "statImages": {
+    "message": "تصویر"
+  },
+  "statLinks": {
+    "message": "لینک"
+  },
+  "outputTitle": {
+    "message": "خروجی"
+  },
+  "notScanned": {
+    "message": "هنوز اسکن نشده"
+  },
+  "scanFailed": {
+    "message": "اسکن ناموفق"
+  },
+  "outputPlaceholder": {
+    "message": "بعد از اسکن، JSON قابل درون‌ریزی المنتور اینجا نمایش داده می‌شود."
+  },
+  "errNoTab": {
+    "message": "تب فعالی پیدا نشد."
+  },
+  "errNotHttp": {
+    "message": "این اکستنشن فقط روی صفحات http و https اجرا می‌شود."
+  },
+  "errNoResult": {
+    "message": "خروجی اسکن دریافت نشد."
+  },
+  "errUnknown": {
+    "message": "خطای ناشناخته هنگام اسکن صفحه رخ داد."
+  },
+  "msgSuccess": {
+    "message": "فایل قابل درون‌ریزی المنتور ساخته شد. برای آرشیو کامل، گزارش را جدا دانلود کنید."
+  },
+  "msgNotDetected": {
+    "message": "نشانه قطعی از المنتور پیدا نشد؛ یک قالب ساده از DOM ساخته شد، اما ممکن است نیاز به ویرایش داشته باشد."
+  },
+  "msgCopied": {
+    "message": "JSON قابل درون‌ریزی المنتور کپی شد."
+  },
+  "msgRedacted": {
+    "message": "$VALUE$ داده حساس (nonce/توکن) حذف شد.",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  }
+}
