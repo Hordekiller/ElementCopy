@@ -23,11 +23,34 @@
   "statusError": {
     "message": "خطا"
   },
+  "scopeLabel": {
+    "message": "محدوده:"
+  },
+  "scopePage": {
+    "message": "کل صفحه"
+  },
+  "scopeSelection": {
+    "message": "انتخاب: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "btnClearSelection": {
+    "message": "پاک کردن"
+  },
   "btnScanPage": {
     "message": "اسکن صفحه فعلی"
   },
+  "btnScanSelection": {
+    "message": "اسکن بخش انتخاب‌شده"
+  },
   "btnScanning": {
     "message": "در حال اسکن..."
+  },
+  "btnPick": {
+    "message": "انتخاب بخش"
   },
   "btnDownloadElementor": {
     "message": "دانلود برای المنتور"
@@ -53,8 +76,11 @@
   "statLinks": {
     "message": "لینک"
   },
-  "outputTitle": {
-    "message": "خروجی"
+  "tabStructure": {
+    "message": "ساختار"
+  },
+  "tabJson": {
+    "message": "JSON"
   },
   "notScanned": {
     "message": "هنوز اسکن نشده"
@@ -64,6 +90,29 @@
   },
   "outputPlaceholder": {
     "message": "بعد از اسکن، JSON قابل درون‌ریزی المنتور اینجا نمایش داده می‌شود."
+  },
+  "treeEmpty": {
+    "message": "هیچ المانی پیدا نشد."
+  },
+  "treeMore": {
+    "message": "و $VALUE$ مورد دیگر (به تب JSON مراجعه کنید)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "elTypeSection": {
+    "message": "بخش"
+  },
+  "elTypeColumn": {
+    "message": "ستون"
+  },
+  "elTypeContainer": {
+    "message": "کانتینر"
+  },
+  "elTypeWidget": {
+    "message": "ویجت"
   },
   "errNoTab": {
     "message": "تب فعالی پیدا نشد."
@@ -93,5 +142,17 @@
         "content": "$1"
       }
     }
+  },
+  "msgSelectionGone": {
+    "message": "بخش انتخاب‌شده دیگر در صفحه وجود ندارد؛ کل صفحه اسکن شد."
+  },
+  "pickerHint": {
+    "message": "برای انتخاب کلیک کنید · ↑ والد · ↓ فرزند · Esc لغو"
+  },
+  "pickerSaved": {
+    "message": "انتخاب ذخیره شد. برای اسکن، اکستنشن را دوباره باز کنید."
+  },
+  "pickerCancelled": {
+    "message": "انتخاب لغو شد."
   }
 }

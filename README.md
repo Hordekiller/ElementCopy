@@ -82,6 +82,15 @@ The popup UI follows the browser language: **English**, **Português (Brasil)** 
 | **Global Assets** | All stylesheets and scripts with Elementor-related flagging |
 | **Elementor Config** | Snapshots of `elementorFrontendConfig`, `ElementorProFrontendConfig`, and other runtime globals |
 
+### 🎯 Section Picker
+- Click **Select section**, hover the page and click the section, column, container or widget you want
+- **↑ / ↓** move to the parent / child element, **Esc** cancels; clicks on links don't navigate while picking
+- Reopen the popup and click **Scan selection** to export only that part of the page
+- Selecting a non-Elementor element produces an `html` widget with its markup
+
+### 🌳 Structure Preview
+- A collapsible tree of sections → columns → widgets (with a short text preview) in the popup, next to the raw JSON tab
+
 ### 📊 Rich Summary Statistics
 - Total Elementor nodes, widget type breakdown, role distribution
 - Link, image, form, and video counts
@@ -136,9 +145,10 @@ The popup UI follows the browser language: **English**, **Português (Brasil)** 
 
 1. **Navigate** to a WordPress page built with Elementor
 2. **Click** the Elementor Extractor icon in your browser toolbar
-3. **Click** **Scan current page** (اسکن صفحه فعلی)
-4. Review the extracted JSON preview in the popup
-5. Choose your action:
+3. *(Optional)* Click **Select section**, click the part of the page you want, then reopen the extension
+4. **Click** **Scan current page** (اسکن صفحه فعلی), or **Scan selection** if you picked a section
+5. Review the structure tree (or the JSON tab) in the popup
+6. Choose your action:
 
 | Button | Action |
 |--------|--------|
@@ -190,10 +200,10 @@ The popup UI follows the browser language: **English**, **Português (Brasil)** 
 ### Flow | جریان اجرا
 
 1. **Popup** (`popup.js`) queries the active tab via `chrome.tabs`
-2. Injects **`scanner.js`** into the extension's isolated world and calls `window.__elementorExtractor.run()`
+2. Injects **`scanner.js`** into the extension's isolated world and calls `window.__elementorExtractor.run({ root })`, where `root` is the element chosen with **`picker.js`** (or the whole page)
 3. Reads Elementor's config globals (`elementorFrontendConfig`, etc.) with a small function in the page's MAIN world, returned as JSON strings
 4. Removes sensitive values (nonces, tokens, `?_wpnonce=` URL params) from the result
-5. Popup displays the import template JSON, updates statistics, and enables download/copy actions
+5. Popup shows the structure tree and JSON, updates statistics, and enables download/copy actions
 
 ### Key Design Decisions
 
@@ -220,8 +230,9 @@ elementor-extractor-extension/
 ├── manifest.json                   # Chrome Extension Manifest V3 configuration
 ├── popup.html                      # Popup UI (direction follows the UI language)
 ├── popup.css                       # Popup styles (carmine theme)
-├── popup.js                        # Popup controller (scan, download, copy logic)
-├── scanner.js                      # Core scanning engine (~840 lines)
+├── popup.js                        # Popup controller (scan, preview, sanitize, download, copy)
+├── picker.js                       # In-page section picker
+├── scanner.js                      # Core scanning engine
 ├── README.md                       # This file
 └── README.pt-BR.md                 # Portuguese (Brazil) README
 ```

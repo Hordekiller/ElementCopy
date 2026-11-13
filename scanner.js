@@ -14,6 +14,16 @@
 
   const classes = (element) => toArray(element?.classList);
 
+  const IMPORTABLE_SELECTOR =
+    ".elementor-element, .elementor-section, .elementor-column, .elementor-widget, .e-con, [data-element_type], [data-widget_type]";
+
+  // Like root.querySelectorAll, but also includes root itself when it matches.
+  const queryAllWithin = (root, selector) => {
+    const found = toArray(root.querySelectorAll(selector));
+    if (root !== document && root.matches?.(selector)) found.unshift(root);
+    return found;
+  };
+
   const getSelector = (element) => {
     if (!element || element.nodeType !== Node.ELEMENT_NODE) return "";
     if (element.id) return `#${CSS.escape(element.id)}`;
@@ -106,7 +116,7 @@
   };
 
   const extractLinks = (root = document) =>
-    toArray(root.querySelectorAll("a[href]")).map((link) => ({
+    queryAllWithin(root, "a[href]").map((link) => ({
       text: text(link, 120),
       href: link.href,
       target: attr(link, "target"),
@@ -116,7 +126,7 @@
     }));
 
   const extractImages = (root = document) =>
-    toArray(root.querySelectorAll("img, picture source[srcset]")).map((image) => ({
+    queryAllWithin(root, "img, picture source[srcset]").map((image) => ({
       tag: image.tagName.toLowerCase(),
       src: image.currentSrc || image.src || attr(image, "src") || "",
       srcset: attr(image, "srcset"),
@@ -130,7 +140,7 @@
     }));
 
   const extractForms = (root = document) =>
-    toArray(root.querySelectorAll("form")).map((form) => ({
+    queryAllWithin(root, "form").map((form) => ({
       action: form.action || attr(form, "action"),
       method: (attr(form, "method") || "get").toUpperCase(),
       name: attr(form, "name"),
@@ -152,7 +162,7 @@
     }));
 
   const extractVideos = (root = document) =>
-    toArray(root.querySelectorAll("video, iframe, embed")).map((video) => ({
+    queryAllWithin(root, "video, iframe, embed").map((video) => ({
       tag: video.tagName.toLowerCase(),
       src: video.currentSrc || video.src || attr(video, "src") || "",
       title: attr(video, "title"),
@@ -295,9 +305,7 @@
 
   const isImportableElement = (element) =>
     Boolean(
-      element?.matches?.(
-        ".elementor-element, .elementor-section, .elementor-column, .elementor-widget, .e-con, [data-element_type], [data-widget_type]",
-      ) && getImportElementType(element),
+      element?.matches?.(IMPORTABLE_SELECTOR) && getImportElementType(element),
     );
 
   const getDirectImportChildren = (root) => {
@@ -317,7 +325,11 @@
     return unique(found);
   };
 
-  const getTopLevelImportElements = () => {
+  const getTopLevelImportElements = (scopeRoot) => {
+    if (scopeRoot) {
+      return isImportableElement(scopeRoot) ? [scopeRoot] : getDirectImportChildren(scopeRoot);
+    }
+
     const rootCandidates = toArray(document.querySelectorAll("[data-elementor-type], .elementor"));
     const roots = rootCandidates.filter(
       (root) => !rootCandidates.some((other) => other !== root && other.contains(root)),
@@ -326,11 +338,9 @@
 
     if (rootChildren.length) return rootChildren;
 
-    const allImportableElements = toArray(
-      document.querySelectorAll(
-        ".elementor-element, .elementor-section, .elementor-column, .elementor-widget, .e-con, [data-element_type], [data-widget_type]",
-      ),
-    ).filter(isImportableElement);
+    const allImportableElements = toArray(document.querySelectorAll(IMPORTABLE_SELECTOR)).filter(
+      isImportableElement,
+    );
 
     return allImportableElements.filter(
       (element) => !allImportableElements.some((other) => other !== element && other.contains(element)),
@@ -534,7 +544,7 @@
     }
   };
 
-  const buildElementorTemplate = () => {
+  const buildElementorTemplate = (scopeRoot = null) => {
     const usedIds = new Set();
 
     const makeIdFromValue = (value) => {
@@ -659,9 +669,25 @@
       return content;
     };
 
-    const nodes = getTopLevelImportElements()
+    let nodes = getTopLevelImportElements(scopeRoot)
       .map((element) => buildNode(element))
       .filter(Boolean);
+
+    // A selection with no Elementor markup (e.g. a non-Elementor site) still
+    // becomes something importable: a single HTML widget with its markup.
+    if (!nodes.length && scopeRoot) {
+      nodes = [
+        {
+          id: makeIdFromValue(`html:${getSelector(scopeRoot)}`),
+          elType: "widget",
+          widgetType: "html",
+          isInner: false,
+          settings: { html: cleanHtml(scopeRoot.outerHTML) },
+          elements: [],
+        },
+      ];
+    }
+
     const content = normalizeTopLevelContent(nodes);
 
     return {
@@ -673,7 +699,7 @@
     };
   };
 
-  const extractElementorElements = () => {
+  const extractElementorElements = (root = document) => {
     const selector = [
       ".elementor",
       ".elementor-element",
@@ -689,7 +715,7 @@
       "[data-model-cid]",
     ].join(",");
 
-    return unique(toArray(document.querySelectorAll(selector))).map((element, index) => {
+    return unique(queryAllWithin(root, selector)).map((element, index) => {
       const role = getElementRole(element);
       const widgetType = getWidgetType(element);
       const childWidgets = toArray(element.querySelectorAll(":scope .elementor-widget")).map(getWidgetType);
@@ -778,16 +804,18 @@
   // Runs in the extension's isolated world: page scripts cannot tamper with
   // these functions. Page-level JS globals (elementorFrontendConfig, ...) are
   // read separately by the popup.
-  const run = () => {
-    const elements = extractElementorElements();
-    const links = extractLinks();
-    const images = extractImages();
-    const forms = extractForms();
-    const videos = extractVideos();
+  const run = ({ root = null } = {}) => {
+    const scopeRoot = root && root.isConnected ? root : null;
+    const scope = scopeRoot || document;
+    const elements = extractElementorElements(scope);
+    const links = extractLinks(scope);
+    const images = extractImages(scope);
+    const forms = extractForms(scope);
+    const videos = extractVideos(scope);
     const templates = extractTemplates();
     const assets = extractGlobalAssets();
     const elementor = detectElementor();
-    const importTemplate = buildElementorTemplate();
+    const importTemplate = buildElementorTemplate(scopeRoot);
 
     return {
       schemaVersion: "1.0.0",
@@ -799,6 +827,9 @@
         language: document.documentElement.lang || "",
         charset: document.characterSet,
       },
+      scope: scopeRoot
+        ? { type: "selection", selector: getSelector(scopeRoot), selectionLost: false }
+        : { type: "page", selectionLost: Boolean(root) },
       elementor,
       summary: summarize(elements, links, images, forms, videos, assets),
       templates,

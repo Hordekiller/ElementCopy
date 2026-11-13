@@ -1,12 +1,18 @@
 const $ = (id) => document.getElementById(id);
 
 const scanButton = $("scanButton");
+const pickButton = $("pickButton");
+const clearSelectionButton = $("clearSelectionButton");
 const downloadElementorButton = $("downloadElementorButton");
 const downloadReportButton = $("downloadReportButton");
 const copyButton = $("copyButton");
 const output = $("output");
+const treeView = $("treeView");
+const tabTree = $("tabTree");
+const tabJson = $("tabJson");
 const message = $("message");
 const statusBadge = $("statusBadge");
+const scopeValue = $("scopeValue");
 const siteInfo = $("siteInfo");
 const totalNodes = $("totalNodes");
 const widgetCount = $("widgetCount");
@@ -15,6 +21,7 @@ const linkCount = $("linkCount");
 
 let lastResult = null;
 let lastDisplayedJson = "";
+let currentSelection = null;
 
 // ---------- i18n ----------
 
@@ -35,6 +42,11 @@ const applyI18n = () => {
 };
 
 const formatter = new Intl.NumberFormat(chrome.i18n.getUILanguage());
+
+const roleLabel = (role) => {
+  const known = { section: "elTypeSection", column: "elTypeColumn", container: "elTypeContainer", widget: "elTypeWidget" };
+  return known[role] ? t(known[role]) : role;
+};
 
 // ---------- sensitive data removal ----------
 
@@ -84,7 +96,22 @@ const setStatus = (key, type = "") => {
 
 const setBusy = (busy) => {
   scanButton.disabled = busy;
-  scanButton.textContent = busy ? t("btnScanning") : t("btnScanPage");
+  pickButton.disabled = busy;
+  scanButton.textContent = busy ? t("btnScanning") : t(currentSelection ? "btnScanSelection" : "btnScanPage");
+};
+
+const renderScope = () => {
+  if (currentSelection) {
+    const parts = [roleLabel(currentSelection.role), currentSelection.widgetType, currentSelection.id && `#${currentSelection.id}`];
+    scopeValue.textContent = t("scopeSelection", [parts.filter(Boolean).join(" · ")]);
+    scopeValue.title = currentSelection.preview || "";
+    clearSelectionButton.hidden = false;
+  } else {
+    scopeValue.textContent = t("scopePage");
+    scopeValue.title = "";
+    clearSelectionButton.hidden = true;
+  }
+  scanButton.textContent = t(currentSelection ? "btnScanSelection" : "btnScanPage");
 };
 
 const setStat = (element, value) => {
@@ -99,6 +126,105 @@ const updateStats = (result) => {
   setStat(widgetCount, widgets);
   setStat(imageCount, result.summary.images);
   setStat(linkCount, result.summary.links);
+};
+
+const showTab = (tab) => {
+  const isTree = tab === "tree";
+  tabTree.classList.toggle("active", isTree);
+  tabJson.classList.toggle("active", !isTree);
+  tabTree.setAttribute("aria-selected", String(isTree));
+  tabJson.setAttribute("aria-selected", String(!isTree));
+  treeView.hidden = !isTree;
+  output.hidden = isTree;
+};
+
+// ---------- structure preview ----------
+
+const MAX_TREE_NODES = 400;
+
+const nodeSummary = (node) => {
+  const settings = Array.isArray(node.settings) ? {} : node.settings || {};
+  const raw =
+    settings.title ||
+    settings.text ||
+    settings.alert_title ||
+    settings.testimonial_content ||
+    settings.editor ||
+    settings.html ||
+    settings.image?.url?.split("/").pop() ||
+    settings.youtube_url ||
+    settings.vimeo_url ||
+    "";
+  const plain = String(raw).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  return plain.length > 60 ? `${plain.slice(0, 60)}…` : plain;
+};
+
+const renderTree = (content) => {
+  treeView.replaceChildren();
+
+  if (!content?.length) {
+    const empty = document.createElement("p");
+    empty.className = "tree-empty";
+    empty.textContent = t("treeEmpty");
+    treeView.append(empty);
+    return;
+  }
+
+  let rendered = 0;
+  let skipped = 0;
+
+  const buildList = (nodes, depth) => {
+    const list = document.createElement("ul");
+
+    for (const node of nodes) {
+      if (rendered >= MAX_TREE_NODES) {
+        skipped += 1;
+        continue;
+      }
+      rendered += 1;
+
+      const item = document.createElement("li");
+      const line = document.createElement("span");
+      line.className = "tree-line";
+
+      const tag = document.createElement("span");
+      tag.className = `tree-tag ${node.elType}`;
+      tag.textContent = node.elType === "widget" ? node.widgetType : roleLabel(node.elType);
+      line.append(tag);
+
+      const summary = nodeSummary(node);
+      if (summary) {
+        const text = document.createElement("span");
+        text.className = "tree-text";
+        text.textContent = summary;
+        line.append(text);
+      }
+
+      if (node.elements?.length) {
+        const details = document.createElement("details");
+        details.open = depth < 2;
+        const summaryElement = document.createElement("summary");
+        summaryElement.append(line);
+        details.append(summaryElement, buildList(node.elements, depth + 1));
+        item.append(details);
+      } else {
+        item.append(line);
+      }
+
+      list.append(item);
+    }
+
+    return list;
+  };
+
+  treeView.append(buildList(content, 0));
+
+  if (skipped) {
+    const more = document.createElement("p");
+    more.className = "tree-empty";
+    more.textContent = t("treeMore", [formatter.format(skipped)]);
+    treeView.append(more);
+  }
 };
 
 // ---------- tab access ----------
@@ -159,13 +285,27 @@ const readElementorConfig = async (tabId) => {
   }
 };
 
-const scanTab = async (tabId) => {
+const scanTab = async (tabId, useSelection) => {
   await chrome.scripting.executeScript({ target: { tabId }, files: ["scanner.js"] });
 
-  const result = await runInTab(tabId, { func: () => window.__elementorExtractor.run() });
+  const result = await runInTab(tabId, {
+    func: (selectionWanted) =>
+      window.__elementorExtractor.run({ root: selectionWanted ? window.__eePicker?.selected : null }),
+    args: [useSelection],
+  });
 
   if (result) result.elementorConfig = await readElementorConfig(tabId);
   return result;
+};
+
+const loadSelection = async () => {
+  try {
+    const tab = await getActiveTab();
+    currentSelection = await runInTab(tab.id, { func: () => window.__eePicker?.getSelection?.() ?? null });
+  } catch {
+    currentSelection = null;
+  }
+  renderScope();
 };
 
 // ---------- actions ----------
@@ -177,7 +317,7 @@ const scanCurrentPage = async () => {
 
   try {
     const tab = await getActiveTab();
-    const rawResult = await scanTab(tab.id);
+    const rawResult = await scanTab(tab.id, Boolean(currentSelection));
 
     if (!rawResult) throw new Error(t("errNoResult"));
 
@@ -187,6 +327,7 @@ const scanCurrentPage = async () => {
     lastResult = result;
     lastDisplayedJson = JSON.stringify(result.importTemplate, null, 2);
     output.value = lastDisplayedJson;
+    renderTree(result.importTemplate.content);
     updateStats(result);
     downloadElementorButton.disabled = false;
     downloadReportButton.disabled = false;
@@ -194,12 +335,18 @@ const scanCurrentPage = async () => {
     siteInfo.textContent = result.page.title || result.page.url;
 
     const notes = [];
+    if (result.scope.selectionLost) {
+      currentSelection = null;
+      renderScope();
+      notes.push(t("msgSelectionGone"));
+    }
+
     if (result.elementor.detected) {
       setStatus("statusSuccess", "success");
-      notes.push(t("msgSuccess"));
+      notes.unshift(t("msgSuccess"));
     } else {
       setStatus("statusNotFound", "warning");
-      notes.push(t("msgNotDetected"));
+      notes.unshift(t("msgNotDetected"));
     }
     if (counter.count) notes.push(t("msgRedacted", [formatter.format(counter.count)]));
 
@@ -208,6 +355,7 @@ const scanCurrentPage = async () => {
     lastResult = null;
     lastDisplayedJson = "";
     output.value = "";
+    renderTree([]);
     resetStats();
     downloadElementorButton.disabled = true;
     downloadReportButton.disabled = true;
@@ -218,6 +366,30 @@ const scanCurrentPage = async () => {
   } finally {
     setBusy(false);
   }
+};
+
+const startPicker = async () => {
+  try {
+    const tab = await getActiveTab();
+    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["picker.js"] });
+    await runInTab(tab.id, { func: () => window.__eePicker.start() });
+    // Close the popup so the user can click on the page right away.
+    window.close();
+  } catch (error) {
+    setStatus("statusError", "error");
+    setMessage(error.message || t("errUnknown"), "error");
+  }
+};
+
+const clearSelection = async () => {
+  try {
+    const tab = await getActiveTab();
+    await runInTab(tab.id, { func: () => window.__eePicker?.clear?.() });
+  } catch {
+    // Nothing to clear.
+  }
+  currentSelection = null;
+  renderScope();
 };
 
 const safeFileName = (result, prefix) => {
@@ -256,9 +428,15 @@ const copyResult = async () => {
 };
 
 scanButton.addEventListener("click", scanCurrentPage);
+pickButton.addEventListener("click", startPicker);
+clearSelectionButton.addEventListener("click", clearSelection);
 downloadElementorButton.addEventListener("click", downloadElementorTemplate);
 downloadReportButton.addEventListener("click", downloadReport);
 copyButton.addEventListener("click", copyResult);
+tabTree.addEventListener("click", () => showTab("tree"));
+tabJson.addEventListener("click", () => showTab("json"));
 
 applyI18n();
 resetStats();
+renderScope();
+loadSelection();

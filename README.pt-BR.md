@@ -34,6 +34,8 @@ O **Elementor Extractor** escaneia uma página feita com o construtor Elementor 
 - **Mais de 30 tipos de widget** reconhecidos (`heading`, `text-editor`, `image`, `button`, `video`, `icon-list`, `tabs`, `accordion`, `counter`, `testimonial` e outros). Widgets desconhecidos têm o tipo deduzido pelo HTML
 - **Recursos da página**: links, imagens, formulários (só a estrutura, nunca o que foi digitado), vídeos, imagens de fundo, variáveis CSS do Elementor, folhas de estilo e scripts
 - **Reconstrução inteligente**: IDs estáveis, widgets soltos embrulhados em seções válidas e HTML limpo (sem `script`, `style` e `meta`)
+- **Selecionar seção**: escolha só uma parte da página para exportar (veja abaixo)
+- **Prévia da estrutura**: árvore de seções → colunas → widgets no popup, ao lado do JSON
 - **Interface traduzida**: segue o idioma do navegador (português do Brasil, inglês ou persa)
 
 ---
@@ -41,7 +43,7 @@ O **Elementor Extractor** escaneia uma página feita com o construtor Elementor 
 ## 🔒 Segurança e privacidade
 
 - **Permissões mínimas**: a extensão só acessa a aba em que você clica nela (`activeTab`). Não há permissão para todos os sites.
-- **Escaneamento isolado**: o `scanner.js` roda no ambiente isolado da extensão, então os scripts do site não conseguem interferir nele. Só uma leitura pequena da configuração do Elementor roda no contexto da página.
+- **Escaneamento isolado**: o `scanner.js` e o `picker.js` rodam no ambiente isolado da extensão, então os scripts do site não conseguem interferir neles. Só uma leitura pequena da configuração do Elementor roda no contexto da página.
 - **Dados sensíveis removidos**: nonces, tokens e valores parecidos (inclusive `?_wpnonce=` em links) são trocados por `[redacted]` nos dois arquivos.
 - **Nada sai do seu computador**: a extensão não faz nenhuma requisição de rede. O resultado só vai para um download local ou para a área de transferência.
 
@@ -64,7 +66,7 @@ O **Elementor Extractor** escaneia uma página feita com o construtor Elementor 
 1. **Abra** uma página WordPress feita com Elementor
 2. **Clique** no ícone do Elementor Extractor na barra do navegador
 3. **Clique** em **Escanear página atual**
-4. Confira o JSON no popup
+4. Confira a estrutura (ou a aba JSON) no popup
 5. Escolha o que fazer:
 
 | Botão | O que faz |
@@ -72,6 +74,16 @@ O **Elementor Extractor** escaneia uma página feita com o construtor Elementor 
 | **Baixar para o Elementor** | Baixa o JSON do template para importar no Elementor |
 | **Baixar relatório** | Baixa o relatório técnico completo em JSON |
 | **Copiar resultado** | Copia o JSON do template para a área de transferência |
+
+### Exportar só uma seção
+
+1. Clique em **Selecionar seção**. O popup fecha.
+2. Passe o mouse sobre a página: a parte sob o cursor fica destacada.
+3. Use **↑** para subir para o elemento pai, **↓** para voltar e **Esc** para cancelar. Durante a seleção, cliques em links não abrem a página.
+4. Clique na parte desejada.
+5. Abra a extensão de novo e clique em **Escanear seleção**. Para voltar à página inteira, clique em **Limpar**.
+
+Se você escolher algo que não é do Elementor, a extensão gera um widget HTML com o conteúdo.
 
 ### Importar no Elementor
 

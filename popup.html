@@ -16,11 +16,18 @@
         <span id="statusBadge" class="badge" data-i18n="statusReady"></span>
       </header>
 
+      <section class="scope" aria-live="polite">
+        <span class="scope-label" data-i18n="scopeLabel"></span>
+        <span id="scopeValue" class="scope-value" data-i18n="scopePage"></span>
+        <button id="clearSelectionButton" class="link-button" type="button" data-i18n="btnClearSelection" hidden></button>
+      </section>
+
       <section class="actions">
         <button id="scanButton" class="primary" type="button" data-i18n="btnScanPage"></button>
+        <button id="pickButton" type="button" data-i18n="btnPick"></button>
         <button id="downloadElementorButton" type="button" data-i18n="btnDownloadElementor" disabled></button>
         <button id="downloadReportButton" type="button" data-i18n="btnDownloadReport" disabled></button>
-        <button id="copyButton" type="button" data-i18n="btnCopy" disabled></button>
+        <button id="copyButton" class="wide" type="button" data-i18n="btnCopy" disabled></button>
       </section>
 
       <section id="message" class="message" hidden></section>
@@ -46,10 +53,16 @@
 
       <section class="result">
         <div class="result-header">
-          <h2 data-i18n="outputTitle"></h2>
+          <div class="tabs" role="tablist">
+            <button id="tabTree" class="tab active" type="button" role="tab" aria-selected="true" aria-controls="treeView" data-i18n="tabStructure"></button>
+            <button id="tabJson" class="tab" type="button" role="tab" aria-selected="false" aria-controls="output" data-i18n="tabJson"></button>
+          </div>
           <span id="siteInfo" data-i18n="notScanned"></span>
         </div>
-        <textarea id="output" spellcheck="false" data-i18n-placeholder="outputPlaceholder"></textarea>
+        <div id="treeView" class="tree" role="tabpanel">
+          <p class="tree-empty" data-i18n="outputPlaceholder"></p>
+        </div>
+        <textarea id="output" role="tabpanel" spellcheck="false" data-i18n-placeholder="outputPlaceholder" hidden></textarea>
       </section>
     </main>
 

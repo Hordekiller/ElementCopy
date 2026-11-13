@@ -23,11 +23,34 @@
   "statusError": {
     "message": "Error"
   },
+  "scopeLabel": {
+    "message": "Scope:"
+  },
+  "scopePage": {
+    "message": "Whole page"
+  },
+  "scopeSelection": {
+    "message": "Selection: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "btnClearSelection": {
+    "message": "Clear"
+  },
   "btnScanPage": {
     "message": "Scan current page"
   },
+  "btnScanSelection": {
+    "message": "Scan selection"
+  },
   "btnScanning": {
     "message": "Scanning..."
+  },
+  "btnPick": {
+    "message": "Select section"
   },
   "btnDownloadElementor": {
     "message": "Download for Elementor"
@@ -53,8 +76,11 @@
   "statLinks": {
     "message": "Links"
   },
-  "outputTitle": {
-    "message": "Output"
+  "tabStructure": {
+    "message": "Structure"
+  },
+  "tabJson": {
+    "message": "JSON"
   },
   "notScanned": {
     "message": "Not scanned yet"
@@ -64,6 +90,29 @@
   },
   "outputPlaceholder": {
     "message": "After scanning, the Elementor-importable result appears here."
+  },
+  "treeEmpty": {
+    "message": "No elements found."
+  },
+  "treeMore": {
+    "message": "+ $VALUE$ more items (see the JSON tab)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "elTypeSection": {
+    "message": "Section"
+  },
+  "elTypeColumn": {
+    "message": "Column"
+  },
+  "elTypeContainer": {
+    "message": "Container"
+  },
+  "elTypeWidget": {
+    "message": "Widget"
   },
   "errNoTab": {
     "message": "No active tab found."
@@ -93,5 +142,17 @@
         "content": "$1"
       }
     }
+  },
+  "msgSelectionGone": {
+    "message": "The selected section no longer exists on the page, so the whole page was scanned."
+  },
+  "pickerHint": {
+    "message": "Click to select · ↑ parent · ↓ child · Esc cancel"
+  },
+  "pickerSaved": {
+    "message": "Selection saved. Open the extension again to scan it."
+  },
+  "pickerCancelled": {
+    "message": "Selection cancelled."
   }
 }

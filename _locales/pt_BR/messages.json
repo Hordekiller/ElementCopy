@@ -23,11 +23,34 @@
   "statusError": {
     "message": "Erro"
   },
+  "scopeLabel": {
+    "message": "Escopo:"
+  },
+  "scopePage": {
+    "message": "Página inteira"
+  },
+  "scopeSelection": {
+    "message": "Seleção: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "btnClearSelection": {
+    "message": "Limpar"
+  },
   "btnScanPage": {
     "message": "Escanear página atual"
   },
+  "btnScanSelection": {
+    "message": "Escanear seleção"
+  },
   "btnScanning": {
     "message": "Escaneando..."
+  },
+  "btnPick": {
+    "message": "Selecionar seção"
   },
   "btnDownloadElementor": {
     "message": "Baixar para o Elementor"
@@ -53,8 +76,11 @@
   "statLinks": {
     "message": "Links"
   },
-  "outputTitle": {
-    "message": "Resultado"
+  "tabStructure": {
+    "message": "Estrutura"
+  },
+  "tabJson": {
+    "message": "JSON"
   },
   "notScanned": {
     "message": "Ainda não escaneado"
@@ -64,6 +90,29 @@
   },
   "outputPlaceholder": {
     "message": "Depois de escanear, o resultado importável no Elementor aparece aqui."
+  },
+  "treeEmpty": {
+    "message": "Nenhum elemento encontrado."
+  },
+  "treeMore": {
+    "message": "+ $VALUE$ itens (veja a aba JSON)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "elTypeSection": {
+    "message": "Seção"
+  },
+  "elTypeColumn": {
+    "message": "Coluna"
+  },
+  "elTypeContainer": {
+    "message": "Contêiner"
+  },
+  "elTypeWidget": {
+    "message": "Widget"
   },
   "errNoTab": {
     "message": "Nenhuma aba ativa encontrada."
@@ -93,5 +142,17 @@
         "content": "$1"
       }
     }
+  },
+  "msgSelectionGone": {
+    "message": "A seção selecionada não existe mais na página; a página inteira foi escaneada."
+  },
+  "pickerHint": {
+    "message": "Clique para selecionar · ↑ pai · ↓ filho · Esc cancela"
+  },
+  "pickerSaved": {
+    "message": "Seleção salva. Abra a extensão de novo para escanear."
+  },
+  "pickerCancelled": {
+    "message": "Seleção cancelada."
   }
 }
