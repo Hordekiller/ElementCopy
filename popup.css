@@ -243,3 +243,140 @@ textarea:focus {
   border-color: rgba(146, 0, 59, 0.7);
   box-shadow: 0 0 0 3px rgba(146, 0, 59, 0.12);
 }
+
+[hidden] {
+  display: none !important;
+}
+
+button.wide {
+  grid-column: 1 / -1;
+}
+
+.scope {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  font-size: 12px;
+}
+
+.scope-label {
+  color: var(--muted);
+}
+
+.scope-value {
+  flex: 1;
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-button {
+  min-height: auto;
+  padding: 2px 6px;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+.link-button:hover:not(:disabled) {
+  transform: none;
+}
+
+.tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+.tab {
+  min-height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.tab.active {
+  background: var(--primary);
+  color: white;
+}
+
+.tab:hover:not(:disabled) {
+  transform: none;
+}
+
+.tree {
+  min-height: 200px;
+  max-height: 275px;
+  overflow: auto;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.tree ul {
+  margin: 0;
+  padding-inline-start: 14px;
+  list-style: none;
+}
+
+.tree > ul {
+  padding-inline-start: 0;
+}
+
+.tree li {
+  margin: 2px 0;
+}
+
+.tree summary {
+  cursor: pointer;
+}
+
+.tree-line {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  max-width: 100%;
+}
+
+.tree-tag {
+  flex-shrink: 0;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: #f4edf2;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.tree-tag.widget {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.tree-text {
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tree-empty {
+  margin: 0;
+  color: var(--muted);
+}

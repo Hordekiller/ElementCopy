@@ -11,6 +11,8 @@
   <strong>استخراج کامل ساختار المنتور از صفحات وردپرس</strong>
   <br />
   A Manifest V3 Chrome Extension to extract, export, and reconstruct Elementor page structures from live WordPress sites.
+  <br />
+  <a href="README.pt-BR.md">🇧🇷 Leia em português</a>
 </p>
 
 <p align="center">
@@ -34,6 +36,20 @@
 This tool is designed for developers, designers, and content migrators who need to archive, migrate, or analyze Elementor-built pages.
 
 > **اکستنشن Elementor Extractor** یک ابزار حرفه‌ای برای اسکن و استخراج ساختار کامل صفحات ساخته‌شده با صفحه‌ساز المنتور است. این اکستنشن دو خروجی JSON مجزا تولید می‌کند: یکی برای درون‌ریزی مستقیم در المنتور و دیگری برای گزارش کامل فنی.
+
+---
+
+## 🔒 Security & privacy
+
+- **Minimal permissions**: no host permissions; the extension only accesses the tab where you click it (`activeTab`).
+- **Isolated scanning**: `scanner.js` runs in the extension's isolated world, so page scripts can't tamper with it. Only a tiny read of Elementor's config globals runs in the page context.
+- **Secrets removed**: nonces, tokens and similar values (including `?_wpnonce=` in links) are replaced with `[redacted]` in both outputs.
+
+---
+
+## 🌐 Languages
+
+The popup UI follows the browser language: **English**, **Português (Brasil)** and **فارسی** (RTL). Translations live in `_locales/<lang>/messages.json`; adding a language is just adding a folder there.
 
 ---
 
@@ -66,11 +82,20 @@ This tool is designed for developers, designers, and content migrators who need 
 | **Global Assets** | All stylesheets and scripts with Elementor-related flagging |
 | **Elementor Config** | Snapshots of `elementorFrontendConfig`, `ElementorProFrontendConfig`, and other runtime globals |
 
+### 🎯 Section Picker
+- Click **Select section**, hover the page and click the section, column, container or widget you want
+- **↑ / ↓** move to the parent / child element, **Esc** cancels; clicks on links don't navigate while picking
+- Reopen the popup and click **Scan selection** to export only that part of the page
+- Selecting a non-Elementor element produces an `html` widget with its markup
+
+### 🌳 Structure Preview
+- A collapsible tree of sections → columns → widgets (with a short text preview) in the popup, next to the raw JSON tab
+
 ### 📊 Rich Summary Statistics
 - Total Elementor nodes, widget type breakdown, role distribution
 - Link, image, form, and video counts
 - Elementor-related stylesheet and script counts
-- All numbers displayed with Persian locale formatting in the popup
+- All numbers formatted for the user's locale in the popup
 
 ### 🛠️ Smart Template Reconstruction
 - **Hashed stable IDs** using FNV-1a algorithm for reproducible element identifiers
@@ -120,15 +145,16 @@ This tool is designed for developers, designers, and content migrators who need 
 
 1. **Navigate** to a WordPress page built with Elementor
 2. **Click** the Elementor Extractor icon in your browser toolbar
-3. **Click** the **"اسکن صفحه فعلی"** (Scan Current Page) button
-4. Review the extracted JSON preview in the popup
-5. Choose your action:
+3. *(Optional)* Click **Select section**, click the part of the page you want, then reopen the extension
+4. **Click** **Scan current page** (اسکن صفحه فعلی), or **Scan selection** if you picked a section
+5. Review the structure tree (or the JSON tab) in the popup
+6. Choose your action:
 
 | Button | Action |
 |--------|--------|
-| **دانلود برای المنتور** | Downloads the Elementor-compatible import template JSON |
-| **دانلود گزارش** | Downloads the full technical extract report JSON |
-| **کپی خروجی** | Copies the import template JSON to clipboard |
+| **Download for Elementor** (دانلود برای المنتور) | Downloads the Elementor-compatible import template JSON |
+| **Download report** (دانلود گزارش) | Downloads the full technical extract report JSON |
+| **Copy output** (کپی خروجی) | Copies the import template JSON to clipboard |
 
 ### Importing into Elementor | درون‌ریزی در المنتور
 
@@ -152,7 +178,7 @@ This tool is designed for developers, designers, and content migrators who need 
 │                                                             │
 │  ┌──────────────┐    ┌──────────────────────────────────┐  │
 │  │   popup.html  │    │          scanner.js              │  │
-│  │   popup.js    │───▶│   (injected into MAIN world)     │  │
+│  │   popup.js    │───▶│   (injected, isolated world)     │  │
 │  │   popup.css   │    │                                  │  │
 │  │              │    │  ┌──────────────────────────┐   │  │
 │  │  ┌─────────┐ │    │  │  buildElementorTemplate │   │  │
@@ -167,22 +193,24 @@ This tool is designed for developers, designers, and content migrators who need 
 │         └──────executeScript────────┘                       │
 │                                                             │
 │  Permissions: activeTab, scripting, downloads               │
-│  Host: <all_urls>                                           │
+│  Host permissions: none (activeTab only)                    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### Flow | جریان اجرا
 
 1. **Popup** (`popup.js`) queries the active tab via `chrome.tabs`
-2. Injects **`scanner.js`** into the page's MAIN world (required for full DOM and JS access)
-3. Calls `window.__elementorExtractor.run()` which returns a comprehensive result object
-4. Popup displays the import template JSON, updates statistics, and enables download/copy actions
+2. Injects **`scanner.js`** into the extension's isolated world and calls `window.__elementorExtractor.run({ root })`, where `root` is the element chosen with **`picker.js`** (or the whole page)
+3. Reads Elementor's config globals (`elementorFrontendConfig`, etc.) with a small function in the page's MAIN world, returned as JSON strings
+4. Removes sensitive values (nonces, tokens, `?_wpnonce=` URL params) from the result
+5. Popup shows the structure tree and JSON, updates statistics, and enables download/copy actions
 
 ### Key Design Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| **MAIN world injection** | Required to access Elementor's runtime globals (`elementorFrontendConfig`, etc.) |
+| **Isolated world by default** | Page scripts can't tamper with the scanner; only the config-globals read runs in the MAIN world |
+| **No host permissions** | `activeTab` grants access only to the tab where the user opens the popup |
 | **FNV-1a hashing for IDs** | Generates deterministic, short (7 char) element IDs without collisions |
 | **Virtual structure wrapping** | Ensures generated templates conform to Elementor's strict section→column→widget hierarchy |
 | **Widget type inference fallback** | Gracefully handles unknown or third-party widgets by inferring from DOM patterns |
@@ -198,12 +226,15 @@ elementor-extractor-extension/
 │   ├── icon32.svg / icon32.png     # 32×32 icon
 │   ├── icon48.svg / icon48.png     # 48×48 extensions page icon
 │   └── icon128.svg / icon128.png   # 128×128 store listing icon
+├── _locales/                       # UI translations (en, pt_BR, fa)
 ├── manifest.json                   # Chrome Extension Manifest V3 configuration
-├── popup.html                      # Popup UI (Persian/RTL layout)
-├── popup.css                       # Popup styles (carmine theme, Persian font stack)
-├── popup.js                        # Popup controller (scan, download, copy logic)
-├── scanner.js                      # Core scanning engine (~840 lines)
-└── README.md                       # This file
+├── popup.html                      # Popup UI (direction follows the UI language)
+├── popup.css                       # Popup styles (carmine theme)
+├── popup.js                        # Popup controller (scan, preview, sanitize, download, copy)
+├── picker.js                       # In-page section picker
+├── scanner.js                      # Core scanning engine
+├── README.md                       # This file
+└── README.pt-BR.md                 # Portuguese (Brazil) README
 ```
 
 ---

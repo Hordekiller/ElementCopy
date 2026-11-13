@@ -1,0 +1,158 @@
+{
+  "extName": {
+    "message": "Elementor Extractor"
+  },
+  "extDescription": {
+    "message": "Extrai widgets, seções, templates, recursos, links, imagens, formulários e metadados do Elementor da página atual."
+  },
+  "heroTitle": {
+    "message": "Extrair elementos do Elementor"
+  },
+  "statusReady": {
+    "message": "Pronto"
+  },
+  "statusScanning": {
+    "message": "Escaneando"
+  },
+  "statusSuccess": {
+    "message": "Sucesso"
+  },
+  "statusNotFound": {
+    "message": "Não encontrado"
+  },
+  "statusError": {
+    "message": "Erro"
+  },
+  "scopeLabel": {
+    "message": "Escopo:"
+  },
+  "scopePage": {
+    "message": "Página inteira"
+  },
+  "scopeSelection": {
+    "message": "Seleção: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "btnClearSelection": {
+    "message": "Limpar"
+  },
+  "btnScanPage": {
+    "message": "Escanear página atual"
+  },
+  "btnScanSelection": {
+    "message": "Escanear seleção"
+  },
+  "btnScanning": {
+    "message": "Escaneando..."
+  },
+  "btnPick": {
+    "message": "Selecionar seção"
+  },
+  "btnDownloadElementor": {
+    "message": "Baixar para o Elementor"
+  },
+  "btnDownloadReport": {
+    "message": "Baixar relatório"
+  },
+  "btnCopy": {
+    "message": "Copiar resultado"
+  },
+  "statsAria": {
+    "message": "Resumo da extração"
+  },
+  "statElements": {
+    "message": "Elementos"
+  },
+  "statWidgets": {
+    "message": "Widgets"
+  },
+  "statImages": {
+    "message": "Imagens"
+  },
+  "statLinks": {
+    "message": "Links"
+  },
+  "tabStructure": {
+    "message": "Estrutura"
+  },
+  "tabJson": {
+    "message": "JSON"
+  },
+  "notScanned": {
+    "message": "Ainda não escaneado"
+  },
+  "scanFailed": {
+    "message": "Falha no escaneamento"
+  },
+  "outputPlaceholder": {
+    "message": "Depois de escanear, o resultado importável no Elementor aparece aqui."
+  },
+  "treeEmpty": {
+    "message": "Nenhum elemento encontrado."
+  },
+  "treeMore": {
+    "message": "+ $VALUE$ itens (veja a aba JSON)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "elTypeSection": {
+    "message": "Seção"
+  },
+  "elTypeColumn": {
+    "message": "Coluna"
+  },
+  "elTypeContainer": {
+    "message": "Contêiner"
+  },
+  "elTypeWidget": {
+    "message": "Widget"
+  },
+  "errNoTab": {
+    "message": "Nenhuma aba ativa encontrada."
+  },
+  "errNotHttp": {
+    "message": "Esta extensão só funciona em páginas http e https."
+  },
+  "errNoResult": {
+    "message": "O escaneamento não retornou resultado."
+  },
+  "errUnknown": {
+    "message": "Erro desconhecido ao escanear a página."
+  },
+  "msgSuccess": {
+    "message": "Arquivo para importar no Elementor criado. Baixe o relatório separadamente para um arquivo completo."
+  },
+  "msgNotDetected": {
+    "message": "Não encontramos sinais claros do Elementor; um template básico foi gerado a partir da página, mas pode precisar de ajustes."
+  },
+  "msgCopied": {
+    "message": "JSON de importação do Elementor copiado."
+  },
+  "msgRedacted": {
+    "message": "$VALUE$ dado(s) sensível(is) (nonces/tokens) removido(s).",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgSelectionGone": {
+    "message": "A seção selecionada não existe mais na página; a página inteira foi escaneada."
+  },
+  "pickerHint": {
+    "message": "Clique para selecionar · ↑ pai · ↓ filho · Esc cancela"
+  },
+  "pickerSaved": {
+    "message": "Seleção salva. Abra a extensão de novo para escanear."
+  },
+  "pickerCancelled": {
+    "message": "Seleção cancelada."
+  }
+}

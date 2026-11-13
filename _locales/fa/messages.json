@@ -1,0 +1,158 @@
+{
+  "extName": {
+    "message": "Elementor Extractor"
+  },
+  "extDescription": {
+    "message": "ویجت‌ها، بخش‌ها، قالب‌ها، منابع، لینک‌ها، تصاویر، فرم‌ها و متادیتای المنتور را از صفحه فعلی استخراج می‌کند."
+  },
+  "heroTitle": {
+    "message": "استخراج المان‌های المنتوری"
+  },
+  "statusReady": {
+    "message": "آماده"
+  },
+  "statusScanning": {
+    "message": "اسکن"
+  },
+  "statusSuccess": {
+    "message": "موفق"
+  },
+  "statusNotFound": {
+    "message": "یافت نشد"
+  },
+  "statusError": {
+    "message": "خطا"
+  },
+  "scopeLabel": {
+    "message": "محدوده:"
+  },
+  "scopePage": {
+    "message": "کل صفحه"
+  },
+  "scopeSelection": {
+    "message": "انتخاب: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "btnClearSelection": {
+    "message": "پاک کردن"
+  },
+  "btnScanPage": {
+    "message": "اسکن صفحه فعلی"
+  },
+  "btnScanSelection": {
+    "message": "اسکن بخش انتخاب‌شده"
+  },
+  "btnScanning": {
+    "message": "در حال اسکن..."
+  },
+  "btnPick": {
+    "message": "انتخاب بخش"
+  },
+  "btnDownloadElementor": {
+    "message": "دانلود برای المنتور"
+  },
+  "btnDownloadReport": {
+    "message": "دانلود گزارش"
+  },
+  "btnCopy": {
+    "message": "کپی خروجی"
+  },
+  "statsAria": {
+    "message": "خلاصه استخراج"
+  },
+  "statElements": {
+    "message": "المان"
+  },
+  "statWidgets": {
+    "message": "ویجت"
+  },
+  "statImages": {
+    "message": "تصویر"
+  },
+  "statLinks": {
+    "message": "لینک"
+  },
+  "tabStructure": {
+    "message": "ساختار"
+  },
+  "tabJson": {
+    "message": "JSON"
+  },
+  "notScanned": {
+    "message": "هنوز اسکن نشده"
+  },
+  "scanFailed": {
+    "message": "اسکن ناموفق"
+  },
+  "outputPlaceholder": {
+    "message": "بعد از اسکن، JSON قابل درون‌ریزی المنتور اینجا نمایش داده می‌شود."
+  },
+  "treeEmpty": {
+    "message": "هیچ المانی پیدا نشد."
+  },
+  "treeMore": {
+    "message": "و $VALUE$ مورد دیگر (به تب JSON مراجعه کنید)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "elTypeSection": {
+    "message": "بخش"
+  },
+  "elTypeColumn": {
+    "message": "ستون"
+  },
+  "elTypeContainer": {
+    "message": "کانتینر"
+  },
+  "elTypeWidget": {
+    "message": "ویجت"
+  },
+  "errNoTab": {
+    "message": "تب فعالی پیدا نشد."
+  },
+  "errNotHttp": {
+    "message": "این اکستنشن فقط روی صفحات http و https اجرا می‌شود."
+  },
+  "errNoResult": {
+    "message": "خروجی اسکن دریافت نشد."
+  },
+  "errUnknown": {
+    "message": "خطای ناشناخته هنگام اسکن صفحه رخ داد."
+  },
+  "msgSuccess": {
+    "message": "فایل قابل درون‌ریزی المنتور ساخته شد. برای آرشیو کامل، گزارش را جدا دانلود کنید."
+  },
+  "msgNotDetected": {
+    "message": "نشانه قطعی از المنتور پیدا نشد؛ یک قالب ساده از DOM ساخته شد، اما ممکن است نیاز به ویرایش داشته باشد."
+  },
+  "msgCopied": {
+    "message": "JSON قابل درون‌ریزی المنتور کپی شد."
+  },
+  "msgRedacted": {
+    "message": "$VALUE$ داده حساس (nonce/توکن) حذف شد.",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgSelectionGone": {
+    "message": "بخش انتخاب‌شده دیگر در صفحه وجود ندارد؛ کل صفحه اسکن شد."
+  },
+  "pickerHint": {
+    "message": "برای انتخاب کلیک کنید · ↑ والد · ↓ فرزند · Esc لغو"
+  },
+  "pickerSaved": {
+    "message": "انتخاب ذخیره شد. برای اسکن، اکستنشن را دوباره باز کنید."
+  },
+  "pickerCancelled": {
+    "message": "انتخاب لغو شد."
+  }
+}
