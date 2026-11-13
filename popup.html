@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,45 +11,45 @@
       <header class="hero">
         <div>
           <p class="eyebrow">Elementor Extractor</p>
-          <h1>استخراج المان‌های المنتوری</h1>
+          <h1 data-i18n="heroTitle"></h1>
         </div>
-        <span id="statusBadge" class="badge">آماده</span>
+        <span id="statusBadge" class="badge" data-i18n="statusReady"></span>
       </header>
 
       <section class="actions">
-        <button id="scanButton" class="primary" type="button">اسکن صفحه فعلی</button>
-        <button id="downloadElementorButton" type="button" disabled>دانلود برای المنتور</button>
-        <button id="downloadReportButton" type="button" disabled>دانلود گزارش</button>
-        <button id="copyButton" type="button" disabled>کپی خروجی</button>
+        <button id="scanButton" class="primary" type="button" data-i18n="btnScanPage"></button>
+        <button id="downloadElementorButton" type="button" data-i18n="btnDownloadElementor" disabled></button>
+        <button id="downloadReportButton" type="button" data-i18n="btnDownloadReport" disabled></button>
+        <button id="copyButton" type="button" data-i18n="btnCopy" disabled></button>
       </section>
 
       <section id="message" class="message" hidden></section>
 
-      <section class="stats" aria-label="خلاصه استخراج">
+      <section class="stats" data-i18n-aria-label="statsAria">
         <article>
-          <strong id="totalNodes">۰</strong>
-          <span>المان</span>
+          <strong id="totalNodes">0</strong>
+          <span data-i18n="statElements"></span>
         </article>
         <article>
-          <strong id="widgetCount">۰</strong>
-          <span>ویجت</span>
+          <strong id="widgetCount">0</strong>
+          <span data-i18n="statWidgets"></span>
         </article>
         <article>
-          <strong id="imageCount">۰</strong>
-          <span>تصویر</span>
+          <strong id="imageCount">0</strong>
+          <span data-i18n="statImages"></span>
         </article>
         <article>
-          <strong id="linkCount">۰</strong>
-          <span>لینک</span>
+          <strong id="linkCount">0</strong>
+          <span data-i18n="statLinks"></span>
         </article>
       </section>
 
       <section class="result">
         <div class="result-header">
-          <h2>خروجی</h2>
-          <span id="siteInfo">هنوز اسکن نشده</span>
+          <h2 data-i18n="outputTitle"></h2>
+          <span id="siteInfo" data-i18n="notScanned"></span>
         </div>
-        <textarea id="output" spellcheck="false" placeholder="بعد از اسکن، JSON قابل درون‌ریزی المنتور اینجا نمایش داده می‌شود."></textarea>
+        <textarea id="output" spellcheck="false" data-i18n-placeholder="outputPlaceholder"></textarea>
       </section>
     </main>
 

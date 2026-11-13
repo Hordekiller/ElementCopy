@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Elementor Extractor",
-  "description": "Extracts Elementor widgets, sections, templates, assets, links, images, forms, and metadata from the current page.",
+  "name": "__MSG_extName__",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
   "version": "1.0.0",
   "action": {
-    "default_title": "Elementor Extractor",
+    "default_title": "__MSG_extName__",
     "default_popup": "popup.html"
   },
   "permissions": [

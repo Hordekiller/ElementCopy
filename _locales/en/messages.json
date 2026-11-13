@@ -1,0 +1,97 @@
+{
+  "extName": {
+    "message": "Elementor Extractor"
+  },
+  "extDescription": {
+    "message": "Extracts Elementor widgets, sections, templates, assets, links, images, forms, and metadata from the current page."
+  },
+  "heroTitle": {
+    "message": "Extract Elementor elements"
+  },
+  "statusReady": {
+    "message": "Ready"
+  },
+  "statusScanning": {
+    "message": "Scanning"
+  },
+  "statusSuccess": {
+    "message": "Done"
+  },
+  "statusNotFound": {
+    "message": "Not found"
+  },
+  "statusError": {
+    "message": "Error"
+  },
+  "btnScanPage": {
+    "message": "Scan current page"
+  },
+  "btnScanning": {
+    "message": "Scanning..."
+  },
+  "btnDownloadElementor": {
+    "message": "Download for Elementor"
+  },
+  "btnDownloadReport": {
+    "message": "Download report"
+  },
+  "btnCopy": {
+    "message": "Copy output"
+  },
+  "statsAria": {
+    "message": "Extraction summary"
+  },
+  "statElements": {
+    "message": "Elements"
+  },
+  "statWidgets": {
+    "message": "Widgets"
+  },
+  "statImages": {
+    "message": "Images"
+  },
+  "statLinks": {
+    "message": "Links"
+  },
+  "outputTitle": {
+    "message": "Output"
+  },
+  "notScanned": {
+    "message": "Not scanned yet"
+  },
+  "scanFailed": {
+    "message": "Scan failed"
+  },
+  "outputPlaceholder": {
+    "message": "After scanning, the Elementor-importable result appears here."
+  },
+  "errNoTab": {
+    "message": "No active tab found."
+  },
+  "errNotHttp": {
+    "message": "This extension only runs on http and https pages."
+  },
+  "errNoResult": {
+    "message": "No scan result was returned."
+  },
+  "errUnknown": {
+    "message": "Unknown error while scanning the page."
+  },
+  "msgSuccess": {
+    "message": "Elementor import file created. Download the report separately for a full archive."
+  },
+  "msgNotDetected": {
+    "message": "No clear sign of Elementor was found; a basic template was built from the page, but it may need editing."
+  },
+  "msgCopied": {
+    "message": "Elementor import JSON copied."
+  },
+  "msgRedacted": {
+    "message": "$VALUE$ sensitive value(s) (nonces/tokens) were removed.",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  }
+}

@@ -11,6 +11,8 @@
   <strong>استخراج کامل ساختار المنتور از صفحات وردپرس</strong>
   <br />
   A Manifest V3 Chrome Extension to extract, export, and reconstruct Elementor page structures from live WordPress sites.
+  <br />
+  <a href="README.pt-BR.md">🇧🇷 Leia em português</a>
 </p>
 
 <p align="center">
@@ -42,6 +44,12 @@ This tool is designed for developers, designers, and content migrators who need 
 - **Minimal permissions**: no host permissions; the extension only accesses the tab where you click it (`activeTab`).
 - **Isolated scanning**: `scanner.js` runs in the extension's isolated world, so page scripts can't tamper with it. Only a tiny read of Elementor's config globals runs in the page context.
 - **Secrets removed**: nonces, tokens and similar values (including `?_wpnonce=` in links) are replaced with `[redacted]` in both outputs.
+
+---
+
+## 🌐 Languages
+
+The popup UI follows the browser language: **English**, **Português (Brasil)** and **فارسی** (RTL). Translations live in `_locales/<lang>/messages.json`; adding a language is just adding a folder there.
 
 ---
 
@@ -78,7 +86,7 @@ This tool is designed for developers, designers, and content migrators who need 
 - Total Elementor nodes, widget type breakdown, role distribution
 - Link, image, form, and video counts
 - Elementor-related stylesheet and script counts
-- All numbers displayed with Persian locale formatting in the popup
+- All numbers formatted for the user's locale in the popup
 
 ### 🛠️ Smart Template Reconstruction
 - **Hashed stable IDs** using FNV-1a algorithm for reproducible element identifiers
@@ -128,15 +136,15 @@ This tool is designed for developers, designers, and content migrators who need 
 
 1. **Navigate** to a WordPress page built with Elementor
 2. **Click** the Elementor Extractor icon in your browser toolbar
-3. **Click** the **"اسکن صفحه فعلی"** (Scan Current Page) button
+3. **Click** **Scan current page** (اسکن صفحه فعلی)
 4. Review the extracted JSON preview in the popup
 5. Choose your action:
 
 | Button | Action |
 |--------|--------|
-| **دانلود برای المنتور** | Downloads the Elementor-compatible import template JSON |
-| **دانلود گزارش** | Downloads the full technical extract report JSON |
-| **کپی خروجی** | Copies the import template JSON to clipboard |
+| **Download for Elementor** (دانلود برای المنتور) | Downloads the Elementor-compatible import template JSON |
+| **Download report** (دانلود گزارش) | Downloads the full technical extract report JSON |
+| **Copy output** (کپی خروجی) | Copies the import template JSON to clipboard |
 
 ### Importing into Elementor | درون‌ریزی در المنتور
 
@@ -208,12 +216,14 @@ elementor-extractor-extension/
 │   ├── icon32.svg / icon32.png     # 32×32 icon
 │   ├── icon48.svg / icon48.png     # 48×48 extensions page icon
 │   └── icon128.svg / icon128.png   # 128×128 store listing icon
+├── _locales/                       # UI translations (en, pt_BR, fa)
 ├── manifest.json                   # Chrome Extension Manifest V3 configuration
-├── popup.html                      # Popup UI (Persian/RTL layout)
-├── popup.css                       # Popup styles (carmine theme, Persian font stack)
+├── popup.html                      # Popup UI (direction follows the UI language)
+├── popup.css                       # Popup styles (carmine theme)
 ├── popup.js                        # Popup controller (scan, download, copy logic)
 ├── scanner.js                      # Core scanning engine (~840 lines)
-└── README.md                       # This file
+├── README.md                       # This file
+└── README.pt-BR.md                 # Portuguese (Brazil) README
 ```
 
 ---

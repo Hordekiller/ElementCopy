@@ -1,20 +1,40 @@
-const scanButton = document.getElementById("scanButton");
-const downloadElementorButton = document.getElementById("downloadElementorButton");
-const downloadReportButton = document.getElementById("downloadReportButton");
-const copyButton = document.getElementById("copyButton");
-const output = document.getElementById("output");
-const message = document.getElementById("message");
-const statusBadge = document.getElementById("statusBadge");
-const siteInfo = document.getElementById("siteInfo");
-const totalNodes = document.getElementById("totalNodes");
-const widgetCount = document.getElementById("widgetCount");
-const imageCount = document.getElementById("imageCount");
-const linkCount = document.getElementById("linkCount");
+const $ = (id) => document.getElementById(id);
+
+const scanButton = $("scanButton");
+const downloadElementorButton = $("downloadElementorButton");
+const downloadReportButton = $("downloadReportButton");
+const copyButton = $("copyButton");
+const output = $("output");
+const message = $("message");
+const statusBadge = $("statusBadge");
+const siteInfo = $("siteInfo");
+const totalNodes = $("totalNodes");
+const widgetCount = $("widgetCount");
+const imageCount = $("imageCount");
+const linkCount = $("linkCount");
 
 let lastResult = null;
 let lastDisplayedJson = "";
 
-const formatter = new Intl.NumberFormat("fa-IR");
+// ---------- i18n ----------
+
+const t = (key, substitutions) => chrome.i18n.getMessage(key, substitutions) || key;
+
+const applyI18n = () => {
+  document.documentElement.lang = chrome.i18n.getUILanguage();
+  document.documentElement.dir = chrome.i18n.getMessage("@@bidi_dir") || "ltr";
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    element.placeholder = t(element.dataset.i18nPlaceholder);
+  });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+    element.setAttribute("aria-label", t(element.dataset.i18nAriaLabel));
+  });
+};
+
+const formatter = new Intl.NumberFormat(chrome.i18n.getUILanguage());
 
 // ---------- sensitive data removal ----------
 
@@ -49,50 +69,53 @@ const sanitize = (value, counter, forced = false) => {
   return value;
 };
 
+// ---------- UI helpers ----------
+
 const setMessage = (text, type = "") => {
   message.textContent = text;
   message.className = `message ${type}`.trim();
   message.hidden = !text;
 };
 
-const setStatus = (text, type = "") => {
-  statusBadge.textContent = text;
+const setStatus = (key, type = "") => {
+  statusBadge.textContent = t(key);
   statusBadge.className = `badge ${type}`.trim();
 };
 
 const setBusy = (busy) => {
   scanButton.disabled = busy;
-  scanButton.textContent = busy ? "در حال اسکن..." : "اسکن صفحه فعلی";
+  scanButton.textContent = busy ? t("btnScanning") : t("btnScanPage");
 };
 
-const resetStats = () => {
-  totalNodes.textContent = "۰";
-  widgetCount.textContent = "۰";
-  imageCount.textContent = "۰";
-  linkCount.textContent = "۰";
+const setStat = (element, value) => {
+  element.textContent = formatter.format(value || 0);
 };
+
+const resetStats = () => [totalNodes, widgetCount, imageCount, linkCount].forEach((element) => setStat(element, 0));
 
 const updateStats = (result) => {
   const widgets = Object.values(result.summary.widgetTypes || {}).reduce((sum, count) => sum + count, 0);
-  totalNodes.textContent = formatter.format(result.summary.totalElementorNodes || 0);
-  widgetCount.textContent = formatter.format(widgets);
-  imageCount.textContent = formatter.format(result.summary.images || 0);
-  linkCount.textContent = formatter.format(result.summary.links || 0);
+  setStat(totalNodes, result.summary.totalElementorNodes);
+  setStat(widgetCount, widgets);
+  setStat(imageCount, result.summary.images);
+  setStat(linkCount, result.summary.links);
 };
+
+// ---------- tab access ----------
 
 const getActiveTab = async () => {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   const tab = tabs[0];
 
-  if (!tab?.id) {
-    throw new Error("تب فعالی پیدا نشد.");
-  }
-
-  if (!/^https?:\/\//i.test(tab.url || "")) {
-    throw new Error("این اکستنشن فقط روی صفحات http و https اجرا می‌شود.");
-  }
+  if (!tab?.id) throw new Error(t("errNoTab"));
+  if (!/^https?:\/\//i.test(tab.url || "")) throw new Error(t("errNotHttp"));
 
   return tab;
+};
+
+const runInTab = async (tabId, options) => {
+  const [execution] = await chrome.scripting.executeScript({ target: { tabId }, ...options });
+  return execution?.result;
 };
 
 // The only code that runs in the page's own JS context: it reads Elementor's
@@ -119,13 +142,7 @@ const ELEMENTOR_GLOBALS = [
 
 const readElementorConfig = async (tabId) => {
   try {
-    const [execution] = await chrome.scripting.executeScript({
-      target: { tabId },
-      func: readPageGlobals,
-      args: [ELEMENTOR_GLOBALS],
-      world: "MAIN",
-    });
-    const raw = execution?.result || {};
+    const raw = (await runInTab(tabId, { func: readPageGlobals, args: [ELEMENTOR_GLOBALS], world: "MAIN" })) || {};
     return Object.fromEntries(
       Object.entries(raw)
         .filter(([, value]) => typeof value === "string")
@@ -142,34 +159,27 @@ const readElementorConfig = async (tabId) => {
   }
 };
 
-const injectScanner = async (tabId) => {
-  await chrome.scripting.executeScript({
-    target: { tabId },
-    files: ["scanner.js"],
-  });
+const scanTab = async (tabId) => {
+  await chrome.scripting.executeScript({ target: { tabId }, files: ["scanner.js"] });
 
-  const [execution] = await chrome.scripting.executeScript({
-    target: { tabId },
-    func: () => window.__elementorExtractor.run(),
-  });
+  const result = await runInTab(tabId, { func: () => window.__elementorExtractor.run() });
 
-  const result = execution?.result;
   if (result) result.elementorConfig = await readElementorConfig(tabId);
   return result;
 };
 
+// ---------- actions ----------
+
 const scanCurrentPage = async () => {
   setBusy(true);
   setMessage("");
-  setStatus("اسکن", "warning");
+  setStatus("statusScanning", "warning");
 
   try {
     const tab = await getActiveTab();
-    const rawResult = await injectScanner(tab.id);
+    const rawResult = await scanTab(tab.id);
 
-    if (!rawResult) {
-      throw new Error("خروجی اسکن دریافت نشد.");
-    }
+    if (!rawResult) throw new Error(t("errNoResult"));
 
     const counter = { count: 0 };
     const result = sanitize(rawResult, counter);
@@ -183,17 +193,17 @@ const scanCurrentPage = async () => {
     copyButton.disabled = false;
     siteInfo.textContent = result.page.title || result.page.url;
 
+    const notes = [];
     if (result.elementor.detected) {
-      setStatus("موفق", "success");
-      setMessage("فایل قابل درون‌ریزی المنتور ساخته شد. برای آرشیو کامل، گزارش را جدا دانلود کنید.", "success");
+      setStatus("statusSuccess", "success");
+      notes.push(t("msgSuccess"));
     } else {
-      setStatus("یافت نشد", "warning");
-      setMessage("نشانه قطعی از المنتور پیدا نشد؛ یک قالب ساده از DOM ساخته شد، اما ممکن است نیاز به ویرایش داشته باشد.");
+      setStatus("statusNotFound", "warning");
+      notes.push(t("msgNotDetected"));
     }
+    if (counter.count) notes.push(t("msgRedacted", [formatter.format(counter.count)]));
 
-    if (counter.count) {
-      message.textContent += ` ${formatter.format(counter.count)} داده حساس (nonce/توکن) حذف شد.`;
-    }
+    setMessage(notes.join(" "), result.elementor.detected ? "success" : "");
   } catch (error) {
     lastResult = null;
     lastDisplayedJson = "";
@@ -202,9 +212,9 @@ const scanCurrentPage = async () => {
     downloadElementorButton.disabled = true;
     downloadReportButton.disabled = true;
     copyButton.disabled = true;
-    siteInfo.textContent = "اسکن ناموفق";
-    setStatus("خطا", "error");
-    setMessage(error.message || "خطای ناشناخته هنگام اسکن صفحه رخ داد.", "error");
+    siteInfo.textContent = t("scanFailed");
+    setStatus("statusError", "error");
+    setMessage(error.message || t("errUnknown"), "error");
   } finally {
     setBusy(false);
   }
@@ -224,35 +234,25 @@ const downloadJson = (payload, filename) => {
   });
   const url = URL.createObjectURL(blob);
 
-  chrome.downloads.download(
-    {
-      url,
-      filename,
-      saveAs: true,
-    },
-    () => {
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    },
-  );
+  chrome.downloads.download({ url, filename, saveAs: true }, () => {
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
 };
 
 const downloadElementorTemplate = () => {
   if (!lastResult) return;
-
   downloadJson(lastResult.importTemplate, safeFileName(lastResult, "elementor-import-template"));
 };
 
 const downloadReport = () => {
   if (!lastResult) return;
-
   downloadJson(lastResult, safeFileName(lastResult, "elementor-extract-report"));
 };
 
 const copyResult = async () => {
   if (!lastDisplayedJson) return;
-
   await navigator.clipboard.writeText(lastDisplayedJson);
-  setMessage("JSON قابل درون‌ریزی المنتور کپی شد.", "success");
+  setMessage(t("msgCopied"), "success");
 };
 
 scanButton.addEventListener("click", scanCurrentPage);
@@ -260,4 +260,5 @@ downloadElementorButton.addEventListener("click", downloadElementorTemplate);
 downloadReportButton.addEventListener("click", downloadReport);
 copyButton.addEventListener("click", copyResult);
 
+applyI18n();
 resetStats();
